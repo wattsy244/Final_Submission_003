@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "T2_003_final.sln"
+    "dotnet.defaultSolution": "Final_Submission_003.sln"
 }
