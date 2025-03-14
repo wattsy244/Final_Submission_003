@@ -6,10 +6,12 @@ public class Movement : MonoBehaviour
 {
     public float movementSpeed = 10.0f;
     public float mouseSensitivity = 1.0f;
+    public float jumpForce = 5f;
+    public float gravity = 20f;
 
     private float verticalRotation = 0;
     private Rigidbody rb;
-
+    private bool isGrounded;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +28,17 @@ public class Movement : MonoBehaviour
         WASD(); // calls the function WASD()
 
         RotationInputM(); // calls the function RotationInputM()
-        
+        // Apply gravity if not grounded
+        if (!isGrounded)
+        {
+            rb.velocity += Vector3.up * -gravity * Time.deltaTime;
+        }
+
+        // Check if the player is on the ground to allow jumping
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
+        {
+            Jump();
+        }
     }
 
     void RotationInputM()
@@ -54,5 +66,26 @@ public class Movement : MonoBehaviour
         movement = transform.TransformDirection(movement);  // make sure player is facing the right direction
 
         rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z); // set velocity of the rb to match Y
+    }
+
+    // Jump function
+    void Jump()
+    {
+        // Apply the jump force only along the Y axis
+        rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+        isGrounded = false;  // Set isGrounded to false since the player is in the air after jumping
+    }
+
+    // Check if player is grounded
+    private void OnCollisionStay(Collision collision)
+    {
+        // If the player is colliding with something from below (ground), allow jumping
+        isGrounded = true;
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        // When the player leaves the ground (e.g., stepping off a ledge), stop jumping
+        isGrounded = false;
     }
 }

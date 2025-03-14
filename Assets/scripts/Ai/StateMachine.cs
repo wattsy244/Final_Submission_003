@@ -24,7 +24,7 @@ public class StateMachine : MonoBehaviour
     public Transform target;
     // a private reference to the NavMeshAgent that will handle the navigation for the game object
 
-    private NavMeshAgent agent;
+   
     //----------------------------------------------------------------------
     
 
@@ -33,8 +33,8 @@ public class StateMachine : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentState = State.StateA;
-        agent = GetComponent<NavMeshAgent>();
+        currentState = State.Search;
+       
         
     }
 
@@ -42,9 +42,9 @@ public class StateMachine : MonoBehaviour
 
     private enum State
     {
-        StateA,
-        StateB,
-        StateC
+        Search,
+        Attack,
+        
     }
 
     // Update is called once per frame
@@ -53,30 +53,27 @@ public class StateMachine : MonoBehaviour
         
         switch (currentState)
         {
-            case State.StateA:
-                Debug.Log("in state A");
+            case State.Search:
+                Debug.Log("in searching state");
                 // sets a random point on the navmesh
-                agent.SetDestination(Random.insideUnitSphere * 420);
+                //agent.SetDestination(Random.insideUnitSphere * 420);
 
 
                 break;
             // in stsate B
-            case State.StateB:
-                Debug.Log("in state B");
+            case State.Attack:
+                Debug.Log("Firing");
                 // checks there is a target
                 if (target != null)
                 {
                     // go to target
-                    agent.SetDestination(target.position);
+                    //agent.SetDestination(target.position);
                 }
                 break;
 
 
 
-            case State.StateC:
-                Debug.Log("In State C");
-               
-                break;
+            
 
         }
         // Calculate the distance between this GameObject and the player.
@@ -97,7 +94,7 @@ public class StateMachine : MonoBehaviour
             // Display a message when the player is close enough.
             Debug.Log("Player not InRange");
         }
-
+        
 
         // Check if the player is in range.
         if (distanceToPlayer <= DeathSpace)
@@ -112,44 +109,33 @@ public class StateMachine : MonoBehaviour
         
        
     }
-    
-   
+
+
 
     public void SwitchState()
     {
-        if (currentState == State.StateA )
+        if (currentState == State.Search)
         {
             if (InRange == true)
             {
-                currentState = State.StateB;
+                currentState = State.Attack;
+
 
             }
-            
+
+
 
         }
 
-        if (currentState == State.StateB)
+        if (currentState == State.Attack)
         {
             if (InRange == false)
             {
-                currentState = State.StateA;
+                currentState = State.Search;
             }
 
         }
 
-        if(currentState == State.StateB)
-        {
-            if (Dead == true)
-            {
-
-
-                currentState = State.StateC;
-                SceneManager.LoadScene("DeathScreen");
-                
-
-            }
-        }
-        
     }
 
 
